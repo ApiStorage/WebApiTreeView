@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace myApiTreeView.API.Dtos
 {
-    public class TestCaseDto
+    public class DtoTestCase
     {
-        public TestCaseDto()
+        public DtoTestCase()
         {
             FolderId = 0;
         }
@@ -14,5 +14,6 @@ namespace myApiTreeView.API.Dtos
         public string Name { get; set; }
         public int StepCount { get; set; }
         public int? FolderId { get; set; }
+
     }
 }

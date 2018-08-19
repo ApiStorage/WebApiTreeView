@@ -17,6 +17,6 @@ namespace myApiTreeView.API.Dtos
 
         public int? ParentFolderId { get; set; }
 
-        public ICollection<TestCaseDto> TestCases {get;set;} = new List<TestCaseDto>();
+        public ICollection<TestCase> TestCases {get;set;} = new List<TestCase>();
     }
 }

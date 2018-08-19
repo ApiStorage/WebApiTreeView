@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace myApiTreeView.Models
 {
-    
     public class Folder
     {
         public Folder()
@@ -13,7 +12,8 @@ namespace myApiTreeView.Models
             TestCases = new HashSet<TestCase>();
         }
          
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        // [Column("Id")]  
         public int FolderId { get; set; }
 
         public string Name { get; set; }
