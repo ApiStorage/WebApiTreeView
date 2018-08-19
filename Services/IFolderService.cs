@@ -1,20 +1,15 @@
 using myApiTreeView.Models;
-using myApiTreeView.API.Dtos;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace myApiTreeView.Services
 {
-    
     public interface IFolderService
     {
-         void AddFolder(Folder folder);
-    
-         Task<Folder> GetFolder(int? parentFolderId);
+        Task<Folder> GetFolderById(int folderId);
 
-          Task<List<Folder>> GetRootFolders();
+        void AddFolder(Folder folder);
 
-         List<Folder> GetAllFolders(List<Folder> list,ref List<TestCase> testcases);
-
+        void DeleteFolder(Folder folder);
     }
 }

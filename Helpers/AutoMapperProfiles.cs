@@ -8,7 +8,8 @@ namespace myApiTreeView.Utilities
     {
         public AutoMapperProfiles()
         {
-            CreateMap<DtoTestCase,TestCase>();
+            CreateMap<TestCaseDto,TestCase>();
+            CreateMap<FolderDto, Folder>();
         }
     }
 }

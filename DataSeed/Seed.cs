@@ -3,10 +3,11 @@ using myApiTreeView.API.Data;
 using myApiTreeView.Models;
 using Newtonsoft.Json;
 using myApiTreeView.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace myApiTreeView.DataSeed
 {
-    public class Seed
+    public class Seed 
     {
         private readonly IFolderService _folderService;
 
@@ -16,7 +17,8 @@ namespace myApiTreeView.DataSeed
 
         public void SeedFolders()
         {
-            var folderData = System.IO.File.ReadAllText("DataSeed/SeedData.json");
+            
+           var folderData = System.IO.File.ReadAllText("DataSeed/SeedData.json");
             var folders = JsonConvert.DeserializeObject<List<Folder>>(folderData);
             foreach(var folder in folders)
             {
@@ -24,6 +26,7 @@ namespace myApiTreeView.DataSeed
             }
         }
 
-        
+
+
     }
 }

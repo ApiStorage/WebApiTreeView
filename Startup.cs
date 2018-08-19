@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -11,14 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using myApiTreeView.API.Utilities;
 using myApiTreeView.API.Data;
+using myApiTreeView.API.Utilities;
 using myApiTreeView.DataSeed;
 using myApiTreeView.Services;
-using AutoMapper;
+using myApiTreeView.Utilities;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Net;
 
 namespace myApiTreeView
 {
@@ -39,25 +34,33 @@ namespace myApiTreeView
             services.AddMvc().AddJsonOptions(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling =
                 Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
-            //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddAutoMapper();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            //Dependency Injection of DataRep,Folder and Services.
             services.AddScoped<IDataRepo,DataRepo>();
             services.AddScoped<IFolderService,FolderService>();
             services.AddScoped<ITestCaseService,TestCaseService>();
 
+            //Seeding 
             services.AddTransient<Seed>();
+
+            //Enabling Cross Origin resource sharing.
             services.AddCors();
 
+            //Swagger compatibility.
            services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
-                    Title = "Tree View Web API",
-                    Description = "This Tree View Api is used to manage the testcase files in the folders."
+                    Title = "Test Case Web API",
+                    Description = "This TestCase Web  Api is used to manage the testcase files in the folders that represent TreeView Structure."
                 });
+            });
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<AutoMapperProfiles>();
             });
         }
 
@@ -69,7 +72,9 @@ namespace myApiTreeView
                 app.UseDeveloperExceptionPage();
             }
             else 
-            { 
+            {
+                //Global error handling in Production environment.
+                //Extension method AddApplicationError will be called to faciitate the error handling.
                 app.UseExceptionHandler(builder => {
                     builder.Run(async context => {
                         context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
@@ -83,16 +88,16 @@ namespace myApiTreeView
             }
 
              app.UseSwagger();
-
              app.UseSwaggerUI(c =>
              {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My TreeView API V1");
-                // c.RoutePrefix = string.Empty;
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My TestCase API V1");
              });
 
-            //seeder.SeedFolders();
+            //SeedFolders will seed data for all the folders at the first instance.
+             seeder.SeedFolders();
+
             app.UseStatusCodePagesWithReExecute("/Errors/Index", "?statusCode={0}");
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());//Cors enabling for headers/Origin/Method/Credentials
             app.UseMvc();
         }
     }

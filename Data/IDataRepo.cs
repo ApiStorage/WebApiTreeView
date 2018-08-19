@@ -6,19 +6,19 @@ namespace myApiTreeView.API.Data
 {
     public interface IDataRepo
     {
-         void Add<T>(T entity) where T: class;
+        void Add<T>(T entity) where T : class;
 
-         void Delete<T>(T entity) where T: class;
+        void Delete<T>(T entity) where T : class;
 
-         Task<bool> SaveAll();
-       
-         Task<Folder> GetFolder(int? parentId);
+        Task<bool> SaveAll();
 
-          Task<List<Folder>> GetRootFolders();
+        Task<Folder> GetFolderById(int? folderId);
 
-         List<Folder> GetAllFolders(List<Folder> folders,ref List<TestCase> testcases);
+        List<Folder> GetAllFolders(List<Folder> folders, ref List<TestCase> testcases);
 
-         Task<TestCase> GetTestCase(int testCaseId);
+        Task<TestCase> GetTestCase(int testCaseId);
+
+        Task<List<TestCase>> GetTestCases(int folderId);
 
     }
 }

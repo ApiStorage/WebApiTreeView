@@ -7,7 +7,6 @@ using myApiTreeView.Models;
 
 namespace myApiTreeView.Services
 {
-
     public class FolderService : IFolderService
     {
         private readonly IDataRepo _repo;
@@ -17,40 +16,36 @@ namespace myApiTreeView.Services
             _repo = repo;
         }
 
+       
+        public Task<Folder> GetFolderById(int folderId)
+        {
+            return _repo.GetFolderById(folderId);
+        }
+
         public void AddFolder(Folder folder)
         {
-               Folder folderObject = new Folder();
-                if(folder.ParentFolderId == 0)
+                Folder parentFolderObject = _repo.GetFolderById(folder.ParentFolderId).Result;
+                Folder folderObject = _repo.GetFolderById(folder.FolderId).Result;
+            
+                if ((folderObject == null && parentFolderObject != null) || folder.FolderId == 0 )
                 {
-                    folderObject.FolderId =  folder.FolderId;
-                    folderObject.Name = $"Root"+folder.ParentFolderId;
-                    _repo.Add(folderObject);
+                    _repo.Add(folder);
                     _repo.SaveAll();
-                } 
+                }
                 else
                 {
-                    Folder parentFolderObject = _repo.GetFolder(folder.ParentFolderId).Result;
-                    folderObject.Name = folder.Name;
-                    folderObject.FolderId = folder.FolderId;
-                    parentFolderObject.SubFolders.Add(folderObject);
-                   _repo.SaveAll();
-                       
-             }
+                    parentFolderObject.SubFolders.Add(folder);
+                    _repo.SaveAll();
+
+                }          
         }
 
-        public List<Folder> GetAllFolders(List<Folder> foldersList,ref List<TestCase> testcases)
+        public void DeleteFolder(Folder folder)
         {
-            return _repo.GetAllFolders(foldersList,ref testcases);
+            _repo.Delete<Folder>(folder);
+            _repo.SaveAll();
         }
 
-        public Task<Folder> GetFolder(int? parentFolderId)
-        {
-           return _repo.GetFolder(parentFolderId);
-        }
 
-        public Task<List<Folder>> GetRootFolders()
-        {
-            return _repo.GetRootFolders();
-        }
     }
 }
